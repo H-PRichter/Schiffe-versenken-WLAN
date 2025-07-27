@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schiffeversenken</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<!--* <script src="{{ url_for('static', filename='editor.js') }}"></script>-->
+
+<body>
+  <h1>⚓ Schiffeversenken</h1>
+  <p id="spielstatus">Spielstatus wird geladen...</p>
+<!--EigenesFeld-->
+  <div class="container">
+    <div class="spielfeld">
+      <h2>Deine Flotte</h2>
+      <div>
+        <button id="schiffdrehen">Schiff drehen</button>
+        <p id="editor-status">Setze Schiff der Länge: <span id="laenge">2</span> (<span id="richtung">horizontal</span>)</p>
+      </div>
+        <div class="grid" id="eigenes-feld">
+          {% for y in range(10) %}
+            {% for x in range(10) %}
+              {% set wert = eigenes_feld[y][x] %}
+              <div class="feld
+                          {% if wert == 'S' %} schiff
+                          {% elif wert == 'X' %} treffer
+                          {% elif wert == 'O' %} verfehlt
+                          {% else %} leer
+                          {% endif %}"
+                  data-x="{{ x }}" data-y="{{ y }}">
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+    </div>
+<!--GegnerFeld-->
+    <div class="spielfeld">
+      <h2>Gegner angreifen</h2>
+      <div class="grid" id="gegner-feld">
+  {% for y in range(10) %}
+    {% for x in range(10) %}
+      {% set wert = gegner_feld[y][x] %}
+      <div class="feld
+                  {% if wert == 'X' %} treffer
+                  {% elif wert == 'O' %} verfehlt
+                  {% else %} leer
+                  {% endif %}">
+      </div>
+    {% endfor %}
+  {% endfor %}
+</div>
+    </div>
+  </div>
+</body>
+
+<script>
+  const spieler = Number("{{ spieler_nummer }}");
+</script>
+
+{% if editormodus %}
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="{{ url_for('static', filename='editor.js') }}"></script>
+{% endif %}
+</html>
+
