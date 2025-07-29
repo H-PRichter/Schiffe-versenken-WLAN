@@ -72,18 +72,18 @@ def setze_schiff():
 def spieler_bereit():
     global spieler1_bereit, spieler2_bereit
     daten = request.get_json()
+    if daten["spieler"] == 1:
+        spieler1_bereit = True
+    elif daten["spieler"] == 2:
+        spieler2_bereit = True    
     spieler = daten.get("spieler")
 
-    if spieler == 1:
-        spieler1_bereit = True
-        print("👤 Spieler 1 ist bereit.")
-    elif spieler == 2:
-        spieler2_bereit = True
-        print("👤 Spieler 2 ist bereit.")
+    status = "wartet"
     if spieler1_bereit and spieler2_bereit:
+        status = "startbereit"
         print("🎯 Beide Spieler sind bereit! Los geht’s!")
 
-    return jsonify({"status": "ok"})
+    return jsonify({"status": status})
 
 @socketio.on("angriff")
 def handle_angriff(daten):
@@ -98,10 +98,6 @@ def handle_angriff(daten):
     
     # Welches Feld ist das Ziel?
     ziel_feld = spieler2_feld if spieler == 1 else spieler1_feld
-
-    #aktuelles_feld = spieler1_feld if spieler == 1 else spieler2_feld
-#    if aktueller_spieler != spieler:
-#        return jsonify({"status": "ungueltig"})
 
     zellwert = ziel_feld[y][x]
     if zellwert == "S":
